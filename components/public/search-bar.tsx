@@ -64,25 +64,27 @@ export function SearchBar({
 
       <div className="hidden h-8 w-px bg-[var(--color-border)] sm:block" />
 
-      <select
-        value={category}
-        onChange={(e) => setCategory(e.target.value)}
-        className="rounded-full border border-[var(--color-border)] bg-white px-4 py-2.5 text-sm text-[var(--color-foreground)] outline-none sm:border-none sm:bg-transparent"
-      >
-        {CATEGORIES.map((cat) => (
-          <option key={cat.value} value={cat.value}>
-            {cat.label}
-          </option>
-        ))}
-      </select>
+      <div className="flex items-center gap-2">
+        <select
+          value={category}
+          onChange={(e) => setCategory(e.target.value)}
+          className="min-w-0 flex-1 rounded-full border border-[var(--color-border)] bg-white px-3 py-2.5 text-sm text-[var(--color-foreground)] outline-none sm:flex-none sm:border-none sm:bg-transparent"
+        >
+          {CATEGORIES.map((cat) => (
+            <option key={cat.value} value={cat.value}>
+              {cat.label}
+            </option>
+          ))}
+        </select>
 
-      <button
-        type="submit"
-        className="inline-flex items-center justify-center gap-2 rounded-full bg-[var(--color-primary)] px-6 py-3 text-sm font-medium text-white shadow-soft transition-all duration-300 hover:scale-105 hover:bg-[var(--color-primary-dark)] hover:shadow-soft-lg active:scale-95"
-      >
-        <Search className="h-4 w-4" />
-        Cari
-      </button>
+        <button
+          type="submit"
+          className="inline-flex shrink-0 items-center justify-center gap-2 rounded-full bg-[var(--color-primary)] px-5 py-3 text-sm font-medium text-white shadow-soft transition-all duration-300 hover:scale-105 hover:bg-[var(--color-primary-dark)] hover:shadow-soft-lg active:scale-95 sm:px-6"
+        >
+          <Search className="h-4 w-4" />
+          <span className="hidden sm:inline">Cari</span>
+        </button>
+      </div>
     </form>
   );
 }

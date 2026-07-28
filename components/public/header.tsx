@@ -83,7 +83,7 @@ export function Header({
           <Link
             href="/pencarian"
             aria-label="Cari"
-            className="hidden h-10 w-10 items-center justify-center rounded-full text-[var(--color-foreground)] transition-all hover:scale-105 hover:bg-[var(--color-primary-light)] sm:inline-flex"
+            className="inline-flex h-10 w-10 items-center justify-center rounded-full text-[var(--color-foreground)] transition-all hover:scale-105 hover:bg-[var(--color-primary-light)]"
           >
             <Search className="h-4.5 w-4.5" />
           </Link>
@@ -108,13 +108,6 @@ export function Header({
 
       {open && (
         <nav className="mx-auto mt-2 flex max-w-6xl flex-col gap-1 rounded-3xl border border-white bg-white/95 p-3 shadow-soft-lg backdrop-blur-md lg:hidden">
-          <Link
-            href="/pencarian"
-            onClick={() => setOpen(false)}
-            className="flex items-center gap-2 rounded-2xl px-3 py-2.5 text-sm font-medium hover:bg-[var(--color-primary-light)]"
-          >
-            <Search className="h-4 w-4" /> Cari
-          </Link>
           {NAV_ITEMS.map((item) => (
             <Link
               key={item.href}
