@@ -7,15 +7,34 @@ export const newsSchema = z.object({
   thumbnail_url: z.string().url().optional().or(z.literal("")),
 });
 
+/**
+ * Nomor HP/WhatsApp UMKM: hanya boleh berisi angka (9-15 digit), atau
+ * tanda "-" jika pemilik UMKM tidak memiliki nomor HP. Field ini tetap
+ * wajib diisi (tidak boleh kosong), tetapi TIDAK wajib berupa angka -
+ * pengguna dapat mengisi "-" jika nomor HP belum tersedia.
+ */
+export const umkmPhoneSchema = z
+  .string()
+  .trim()
+  .min(1, "Nomor HP wajib diisi. Isi dengan angka, atau tanda \"-\" jika belum ada.")
+  .refine(
+    (val) => val === "-" || /^[0-9]{9,15}$/.test(val),
+    "Nomor HP hanya boleh berisi angka (9-15 digit), atau isi \"-\" jika pemilik UMKM belum memiliki nomor HP."
+  );
+
+export const DUSUN_OPTIONS = [1, 2, 3, 4, 5] as const;
+
 export const umkmSchema = z.object({
   name: z.string().min(3, "Nama usaha minimal 3 karakter").max(150),
   owner: z.string().min(3, "Nama pemilik minimal 3 karakter").max(100),
   category_id: z.string().uuid("Kategori wajib dipilih"),
+  dusun: z.coerce
+    .number()
+    .int("Dusun wajib dipilih")
+    .min(1, "Dusun wajib dipilih")
+    .max(5, "Dusun tidak valid"),
   address: z.string().optional().or(z.literal("")),
-  whatsapp: z
-    .string()
-    .min(9, "Nomor WhatsApp tidak valid")
-    .regex(/^[0-9+\-\s]+$/, "Nomor WhatsApp hanya boleh berisi angka"),
+  whatsapp: umkmPhoneSchema,
   description: z.string().optional().or(z.literal("")),
   photo_url: z.string().url().optional().or(z.literal("")),
 });

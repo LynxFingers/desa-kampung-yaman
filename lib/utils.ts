@@ -53,11 +53,32 @@ export function getStockStatus(stock: number | null | undefined) {
   return { label: `Stok Tersedia: ${stock}`, className: "bg-green-50 text-[var(--color-success)]" };
 }
 
-/** Normalizes a phone number to the wa.me format (62xxxxxxxxxx). */
-export function toWhatsAppLink(phone: string) {
+/**
+ * Normalizes a phone number to the wa.me format (62xxxxxxxxxx).
+ * Returns null when the UMKM has no phone number on file (stored as "-"),
+ * so callers can hide the WhatsApp button instead of linking to a broken
+ * https://wa.me/ URL.
+ */
+export function toWhatsAppLink(phone: string): string | null {
+  if (!phone || phone.trim() === "-") return null;
   const digits = phone.replace(/\D/g, "");
+  if (!digits) return null;
   const normalized = digits.startsWith("0") ? "62" + digits.slice(1) : digits;
   return `https://wa.me/${normalized}`;
+}
+
+export const DUSUN_LABELS: Record<number, string> = {
+  1: "Dusun 1",
+  2: "Dusun 2",
+  3: "Dusun 3",
+  4: "Dusun 4",
+  5: "Dusun 5",
+};
+
+/** Human-readable label for a UMKM's dusun (hamlet) grouping. */
+export function formatDusun(dusun: number | null | undefined) {
+  if (!dusun) return null;
+  return DUSUN_LABELS[dusun] ?? `Dusun ${dusun}`;
 }
 
 /** Extracts the object path within a bucket from a Supabase public storage URL. */

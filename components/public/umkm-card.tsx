@@ -4,9 +4,12 @@ import { ImageOff, User } from "lucide-react";
 import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
+import { formatDusun } from "@/lib/utils";
 import type { Umkm } from "@/types/database";
 
 export function UmkmCard({ umkm }: { umkm: Umkm }) {
+  const dusunLabel = formatDusun(umkm.dusun);
+
   return (
     <Card className="group flex h-full flex-col overflow-hidden p-3">
       <Link href={`/umkm/${umkm.id}`} className="relative aspect-[4/3] w-full overflow-hidden rounded-3xl bg-[var(--color-accent-light)]">
@@ -32,9 +35,10 @@ export function UmkmCard({ umkm }: { umkm: Umkm }) {
             {umkm.name}
           </h3>
         </Link>
-        <p className="mb-4 flex items-center gap-1.5 text-sm text-[var(--color-muted)]">
+        <p className="mb-1.5 flex items-center gap-1.5 text-sm text-[var(--color-muted)]">
           <User className="h-3.5 w-3.5 shrink-0" /> {umkm.owner}
         </p>
+        <p className="mb-4 text-xs font-medium text-[var(--color-accent)]">{dusunLabel ?? "\u00A0"}</p>
         <Button href={`/umkm/${umkm.id}`} className="mt-auto w-full">
           Lihat Detail
         </Button>

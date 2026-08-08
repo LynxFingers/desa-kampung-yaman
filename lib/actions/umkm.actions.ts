@@ -11,6 +11,7 @@ function parseUmkmForm(formData: FormData) {
     name: formData.get("name"),
     owner: formData.get("owner"),
     category_id: formData.get("category_id"),
+    dusun: formData.get("dusun"),
     address: formData.get("address") ?? "",
     whatsapp: formData.get("whatsapp"),
     description: formData.get("description") ?? "",

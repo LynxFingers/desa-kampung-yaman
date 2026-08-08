@@ -31,6 +31,7 @@ export default async function ProdukDetailPage({
   if (!umkm || !product || product.umkm_id !== umkm.id) notFound();
 
   const stockStatus = getStockStatus(product.stock);
+  const waLink = toWhatsAppLink(umkm.whatsapp);
 
   return (
     <div className="mx-auto max-w-5xl px-4 py-20 sm:px-6">
@@ -99,9 +100,11 @@ export default async function ProdukDetailPage({
           )}
 
           <div className="flex flex-wrap gap-3">
-            <Button href={toWhatsAppLink(umkm.whatsapp)} variant="accent" size="lg">
-              <MessageCircle className="h-4 w-4" /> Tanya via WhatsApp
-            </Button>
+            {waLink && (
+              <Button href={waLink} variant="accent" size="lg">
+                <MessageCircle className="h-4 w-4" /> Tanya via WhatsApp
+              </Button>
+            )}
             <Button href={`/umkm/${umkm.id}`} variant="outline" size="lg">
               Lihat Semua Produk {umkm.name}
             </Button>

@@ -87,6 +87,7 @@ export interface Umkm {
   whatsapp: string;
   description: string | null;
   photo_url: string | null;
+  dusun: number | null;
   created_at: string;
   umkm_categories?: UmkmCategory | null;
 }

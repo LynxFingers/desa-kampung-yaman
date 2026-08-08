@@ -8,6 +8,7 @@ import { Select } from "@/components/ui/select";
 import { SubmitButton } from "@/components/dashboard/submit-button";
 import { ImageUploadField } from "@/components/dashboard/image-upload-field";
 import { createUmkm, updateUmkm } from "@/lib/actions/umkm.actions";
+import { DUSUN_OPTIONS } from "@/lib/validations/schemas";
 import type { ActionResult, Umkm, UmkmCategory } from "@/types/database";
 
 const initialState: ActionResult = { success: false, message: undefined };
@@ -47,13 +48,36 @@ export function UmkmForm({ umkm, categories }: { umkm?: Umkm; categories: UmkmCa
           </Select>
         </div>
         <div>
-          <Label htmlFor="whatsapp">Nomor WhatsApp</Label>
-          <Input id="whatsapp" name="whatsapp" defaultValue={umkm?.whatsapp ?? ""} placeholder="0812xxxxxxx" required />
+          <Label htmlFor="dusun">Dusun</Label>
+          <Select id="dusun" name="dusun" defaultValue={umkm?.dusun ? String(umkm.dusun) : ""} required>
+            <option value="" disabled>Pilih dusun</option>
+            {DUSUN_OPTIONS.map((d) => (
+              <option key={d} value={d}>Dusun {d}</option>
+            ))}
+          </Select>
         </div>
       </div>
-      <div>
-        <Label htmlFor="address">Alamat Usaha</Label>
-        <Input id="address" name="address" defaultValue={umkm?.address ?? ""} />
+      <div className="grid gap-6 sm:grid-cols-2">
+        <div>
+          <Label htmlFor="whatsapp">Nomor HP/WhatsApp</Label>
+          <Input
+            id="whatsapp"
+            name="whatsapp"
+            inputMode="tel"
+            pattern="^(-|[0-9]{9,15})$"
+            title='Isi dengan angka saja (contoh: 081234567890), atau tanda "-" jika pemilik tidak memiliki nomor HP.'
+            defaultValue={umkm?.whatsapp ?? ""}
+            placeholder='0812xxxxxxx atau "-" jika tidak ada'
+            required
+          />
+          <p className="mt-1.5 text-xs text-[var(--color-muted)]">
+            Isi dengan angka saja, atau tanda &ldquo;-&rdquo; jika pemilik UMKM belum memiliki nomor HP.
+          </p>
+        </div>
+        <div>
+          <Label htmlFor="address">Alamat Usaha</Label>
+          <Input id="address" name="address" defaultValue={umkm?.address ?? ""} />
+        </div>
       </div>
       <ImageUploadField
         name="photo_url"

@@ -5,11 +5,12 @@ import type { Umkm, UmkmCategory, UmkmProduct } from "@/types/database";
 export interface UmkmListParams {
   search?: string;
   categoryId?: string;
+  dusun?: number;
   page?: number;
   pageSize?: number;
 }
 
-export async function getUmkmList({ search, categoryId, page = 1, pageSize = PAGE_SIZE }: UmkmListParams = {}) {
+export async function getUmkmList({ search, categoryId, dusun, page = 1, pageSize = PAGE_SIZE }: UmkmListParams = {}) {
   try {
     const supabase = await createClient();
     const from = (page - 1) * pageSize;
@@ -23,6 +24,7 @@ export async function getUmkmList({ search, categoryId, page = 1, pageSize = PAG
 
     if (search) query = query.ilike("name", `%${search}%`);
     if (categoryId) query = query.eq("category_id", categoryId);
+    if (dusun) query = query.eq("dusun", dusun);
 
     const { data, count } = await query;
     return { items: (data as Umkm[]) ?? [], total: count ?? 0 };
@@ -118,5 +120,39 @@ export async function getUmkmCategoryCounts(): Promise<{ total: number; categori
     };
   } catch {
     return { total: 0, categories: [] };
+  }
+}
+
+export interface UmkmDusunCount {
+  dusun: number;
+  total: number;
+}
+
+/**
+ * Rincian jumlah UMKM per Dusun (1-5), dipakai untuk filter direktori
+ * UMKM publik dan ringkasan pada dashboard admin. UMKM lama yang belum
+ * memiliki dusun (dusun = null) tidak dihitung pada rincian ini, tetapi
+ * tetap ikut dalam `total` keseluruhan (lihat getUmkmCategoryCounts).
+ */
+export async function getUmkmDusunCounts(): Promise<{ unassigned: number; dusun: UmkmDusunCount[] }> {
+  try {
+    const supabase = await createClient();
+    const { data } = await supabase.from("umkm").select("dusun");
+    const rows = (data as { dusun: number | null }[]) ?? [];
+
+    const counts = new Map<number, number>();
+    let unassigned = 0;
+    for (const row of rows) {
+      if (!row.dusun) {
+        unassigned += 1;
+        continue;
+      }
+      counts.set(row.dusun, (counts.get(row.dusun) ?? 0) + 1);
+    }
+
+    const dusun: UmkmDusunCount[] = [1, 2, 3, 4, 5].map((d) => ({ dusun: d, total: counts.get(d) ?? 0 }));
+    return { unassigned, dusun };
+  } catch {
+    return { unassigned: 0, dusun: [] };
   }
 }

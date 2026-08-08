@@ -8,7 +8,7 @@ import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Reveal, StaggerGroup, StaggerItem } from "@/components/motion/reveal";
 import { getUmkmById, getUmkmProducts } from "@/lib/data/umkm";
-import { toWhatsAppLink, formatCurrency, getStockStatus } from "@/lib/utils";
+import { toWhatsAppLink, formatCurrency, getStockStatus, formatDusun } from "@/lib/utils";
 
 export async function generateMetadata({
   params,
@@ -25,6 +25,9 @@ export default async function UmkmDetailPage({ params }: { params: Promise<{ id:
   const [umkm, products] = await Promise.all([getUmkmById(id), getUmkmProducts(id)]);
 
   if (!umkm) notFound();
+
+  const waLink = toWhatsAppLink(umkm.whatsapp);
+  const dusunLabel = formatDusun(umkm.dusun);
 
   return (
     <div className="mx-auto max-w-6xl px-4 py-20 sm:px-6">
@@ -44,7 +47,10 @@ export default async function UmkmDetailPage({ params }: { params: Promise<{ id:
         </Reveal>
 
         <Reveal direction="right" delay={0.1}>
-          {umkm.umkm_categories?.name && <Badge className="mb-3">{umkm.umkm_categories.name}</Badge>}
+          <div className="mb-3 flex flex-wrap gap-2">
+            {umkm.umkm_categories?.name && <Badge>{umkm.umkm_categories.name}</Badge>}
+            {dusunLabel && <Badge className="bg-[var(--color-accent-light)] text-[var(--color-primary-dark)]">{dusunLabel}</Badge>}
+          </div>
           <h1 className="mb-2 font-display text-3xl text-[var(--color-primary-dark)]">{umkm.name}</h1>
           <p className="mb-6 text-sm text-[var(--color-muted)]">Pemilik: {umkm.owner}</p>
 
@@ -60,9 +66,13 @@ export default async function UmkmDetailPage({ params }: { params: Promise<{ id:
             </p>
           )}
 
-          <Button href={toWhatsAppLink(umkm.whatsapp)} variant="accent" size="lg">
-            <MessageCircle className="h-4 w-4" /> Hubungi via WhatsApp
-          </Button>
+          {waLink ? (
+            <Button href={waLink} variant="accent" size="lg">
+              <MessageCircle className="h-4 w-4" /> Hubungi via WhatsApp
+            </Button>
+          ) : (
+            <p className="text-sm text-[var(--color-muted)]">Nomor HP belum tersedia.</p>
+          )}
         </Reveal>
       </div>
 
