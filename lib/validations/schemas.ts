@@ -16,6 +16,7 @@ export const umkmSchema = z.object({
   owner: z.string().min(3, "Nama pemilik minimal 3 karakter").max(100).optional().or(z.literal("")),
   category_id: z.string().uuid("Kategori wajib dipilih"),
   address: z.string().optional().or(z.literal("")),
+  dusun: z.string().max(100).optional().or(z.literal("")),
   whatsapp: z
     .string()
     .min(9, "Nomor WhatsApp tidak valid")

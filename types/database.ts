@@ -84,6 +84,7 @@ export interface Umkm {
   name: string | null;
   owner: string | null;
   address: string | null;
+  dusun: string | null;
   whatsapp: string | null;
   description: string | null;
   photo_url: string | null;

@@ -6,7 +6,8 @@ import { EmptyState } from "@/components/ui/empty-state";
 import { Pagination } from "@/components/ui/pagination";
 import { DeleteButton } from "@/components/dashboard/delete-button";
 import { UmkmCategoryStats } from "@/components/dashboard/umkm-category-stats";
-import { getUmkmList, getUmkmCategoryCounts } from "@/lib/data/umkm";
+import { UmkmDusunStats } from "@/components/dashboard/umkm-dusun-stats";
+import { getUmkmList, getUmkmCategoryCounts, getUmkmDusunCounts } from "@/lib/data/umkm";
 import { deleteUmkm } from "@/lib/actions/umkm.actions";
 import { getPageFromSearchParams, PAGE_SIZE } from "@/lib/utils";
 
@@ -17,9 +18,10 @@ export default async function DashboardUmkmPage({
 }) {
   const params = await searchParams;
   const page = getPageFromSearchParams(params);
-  const [{ items, total }, categoryCounts] = await Promise.all([
+  const [{ items, total }, categoryCounts, dusunCounts] = await Promise.all([
     getUmkmList({ page, pageSize: PAGE_SIZE }),
     getUmkmCategoryCounts(),
+    getUmkmDusunCounts(),
   ]);
   const totalPages = Math.ceil(total / PAGE_SIZE);
 
@@ -37,6 +39,7 @@ export default async function DashboardUmkmPage({
       />
 
       <UmkmCategoryStats total={categoryCounts.total} categories={categoryCounts.categories} />
+      <UmkmDusunStats dusun={dusunCounts.dusun} unassigned={dusunCounts.unassigned} />
 
       {items.length > 0 ? (
         <div className="overflow-hidden rounded-[var(--radius-card)] border border-[var(--color-border)] bg-white">

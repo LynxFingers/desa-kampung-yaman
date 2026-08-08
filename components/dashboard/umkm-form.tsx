@@ -60,6 +60,10 @@ export function UmkmForm({ umkm, categories }: { umkm?: Umkm; categories: UmkmCa
         <Label htmlFor="address">Alamat Usaha</Label>
         <Input id="address" name="address" defaultValue={umkm?.address ?? ""} />
       </div>
+      <div>
+        <Label htmlFor="dusun">Dusun</Label>
+        <Input id="dusun" name="dusun" defaultValue={umkm?.dusun ?? ""} placeholder="Contoh: Dusun I (opsional)" />
+      </div>
       <ImageUploadField
         name="photo_url"
         label="Foto Usaha/Produk"

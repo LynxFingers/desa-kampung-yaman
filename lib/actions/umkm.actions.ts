@@ -29,6 +29,7 @@ export async function createUmkm(formData: FormData): Promise<ActionResult> {
     owner: parsed.data.owner || null,
     whatsapp: parsed.data.whatsapp || null,
     address: parsed.data.address || null,
+    dusun: parsed.data.dusun || null,
     description: parsed.data.description || null,
     photo_url: parsed.data.photo_url || null,
   });
@@ -55,6 +56,7 @@ export async function updateUmkm(id: string, formData: FormData): Promise<Action
       owner: parsed.data.owner || null,
       whatsapp: parsed.data.whatsapp || null,
       address: parsed.data.address || null,
+      dusun: parsed.data.dusun || null,
       description: parsed.data.description || null,
       photo_url: parsed.data.photo_url || null,
     })

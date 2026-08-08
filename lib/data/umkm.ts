@@ -88,6 +88,43 @@ export interface UmkmCategoryCount {
   total: number;
 }
 
+export interface UmkmDusunCount {
+  dusun: string;
+  total: number;
+}
+
+/**
+ * Groups UMKM by their (free-text) dusun field, for the "Rincian per Dusun"
+ * dashboard widget. UMKM without a dusun set are returned separately as
+ * `unassigned` rather than grouped under a fake label.
+ */
+export async function getUmkmDusunCounts(): Promise<{ dusun: UmkmDusunCount[]; unassigned: number }> {
+  try {
+    const supabase = await createClient();
+    const { data } = await supabase.from("umkm").select("dusun");
+    const rows = (data as { dusun: string | null }[]) ?? [];
+
+    const counts = new Map<string, number>();
+    let unassigned = 0;
+    for (const row of rows) {
+      const value = row.dusun?.trim();
+      if (!value) {
+        unassigned += 1;
+        continue;
+      }
+      counts.set(value, (counts.get(value) ?? 0) + 1);
+    }
+
+    const dusun = Array.from(counts.entries())
+      .map(([name, total]) => ({ dusun: name, total }))
+      .sort((a, b) => a.dusun.localeCompare(b.dusun));
+
+    return { dusun, unassigned };
+  } catch {
+    return { dusun: [], unassigned: 0 };
+  }
+}
+
 /**
  * Total UMKM overall, plus a per-category breakdown (FR-DASH-02 style
  * summary used on the dashboard and as category counts on the public
