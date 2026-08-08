@@ -8,7 +8,6 @@ import { Select } from "@/components/ui/select";
 import { SubmitButton } from "@/components/dashboard/submit-button";
 import { ImageUploadField } from "@/components/dashboard/image-upload-field";
 import { createUmkm, updateUmkm } from "@/lib/actions/umkm.actions";
-import { DUSUN_OPTIONS } from "@/lib/validations/schemas";
 import type { ActionResult, Umkm, UmkmCategory } from "@/types/database";
 
 const initialState: ActionResult = { success: false, message: undefined };
@@ -27,14 +26,19 @@ export function UmkmForm({ umkm, categories }: { umkm?: Umkm; categories: UmkmCa
           {state.message}
         </div>
       )}
+      <p className="rounded-lg bg-[var(--color-primary-light)]/40 px-4 py-3 text-xs leading-relaxed text-[var(--color-muted)]">
+        Hanya <strong>Kategori</strong> yang wajib diisi. Jika profil usaha (nama, pemilik, WhatsApp) belum
+        diketahui, kosongkan saja — data ini tetap terhitung di statistik, tapi belum ditampilkan sebagai
+        kartu UMKM di halaman publik sampai dilengkapi.
+      </p>
       <div className="grid gap-6 sm:grid-cols-2">
         <div>
           <Label htmlFor="name">Nama Usaha</Label>
-          <Input id="name" name="name" defaultValue={umkm?.name ?? ""} required />
+          <Input id="name" name="name" defaultValue={umkm?.name ?? ""} placeholder="Kosongkan jika belum tahu" />
         </div>
         <div>
           <Label htmlFor="owner">Nama Pemilik</Label>
-          <Input id="owner" name="owner" defaultValue={umkm?.owner ?? ""} required />
+          <Input id="owner" name="owner" defaultValue={umkm?.owner ?? ""} placeholder="Kosongkan jika belum tahu" />
         </div>
       </div>
       <div className="grid gap-6 sm:grid-cols-2">
@@ -48,36 +52,13 @@ export function UmkmForm({ umkm, categories }: { umkm?: Umkm; categories: UmkmCa
           </Select>
         </div>
         <div>
-          <Label htmlFor="dusun">Dusun</Label>
-          <Select id="dusun" name="dusun" defaultValue={umkm?.dusun ? String(umkm.dusun) : ""} required>
-            <option value="" disabled>Pilih dusun</option>
-            {DUSUN_OPTIONS.map((d) => (
-              <option key={d} value={d}>Dusun {d}</option>
-            ))}
-          </Select>
+          <Label htmlFor="whatsapp">Nomor WhatsApp</Label>
+          <Input id="whatsapp" name="whatsapp" defaultValue={umkm?.whatsapp ?? ""} placeholder="0812xxxxxxx (opsional)" />
         </div>
       </div>
-      <div className="grid gap-6 sm:grid-cols-2">
-        <div>
-          <Label htmlFor="whatsapp">Nomor HP/WhatsApp</Label>
-          <Input
-            id="whatsapp"
-            name="whatsapp"
-            inputMode="tel"
-            pattern="^(-|[0-9]{9,15})$"
-            title='Isi dengan angka saja (contoh: 081234567890), atau tanda "-" jika pemilik tidak memiliki nomor HP.'
-            defaultValue={umkm?.whatsapp ?? ""}
-            placeholder='0812xxxxxxx atau "-" jika tidak ada'
-            required
-          />
-          <p className="mt-1.5 text-xs text-[var(--color-muted)]">
-            Isi dengan angka saja, atau tanda &ldquo;-&rdquo; jika pemilik UMKM belum memiliki nomor HP.
-          </p>
-        </div>
-        <div>
-          <Label htmlFor="address">Alamat Usaha</Label>
-          <Input id="address" name="address" defaultValue={umkm?.address ?? ""} />
-        </div>
+      <div>
+        <Label htmlFor="address">Alamat Usaha</Label>
+        <Input id="address" name="address" defaultValue={umkm?.address ?? ""} />
       </div>
       <ImageUploadField
         name="photo_url"

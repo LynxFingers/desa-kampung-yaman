@@ -32,7 +32,7 @@ export default async function UmkmProductsPage({ params }: { params: Promise<{ i
             <div key={product.id} className="overflow-hidden rounded-[var(--radius-card)] border border-[var(--color-border)] bg-white">
               <div className="relative aspect-square w-full bg-[var(--color-accent-light)]">
                 {product.photo_url ? (
-                  <Image src={product.photo_url} alt={product.name ?? umkm.name} fill className="object-cover" />
+                  <Image src={product.photo_url} alt={product.name ?? umkm.name ?? "Produk"} fill className="object-cover" />
                 ) : (
                   <div className="flex h-full w-full items-center justify-center text-[var(--color-accent)]">
                     <ImageOff className="h-6 w-6" />

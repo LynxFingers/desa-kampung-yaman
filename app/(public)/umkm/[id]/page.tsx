@@ -8,7 +8,7 @@ import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Reveal, StaggerGroup, StaggerItem } from "@/components/motion/reveal";
 import { getUmkmById, getUmkmProducts } from "@/lib/data/umkm";
-import { toWhatsAppLink, formatCurrency, getStockStatus, formatDusun } from "@/lib/utils";
+import { toWhatsAppLink, formatCurrency } from "@/lib/utils";
 
 export async function generateMetadata({
   params,
@@ -26,9 +26,6 @@ export default async function UmkmDetailPage({ params }: { params: Promise<{ id:
 
   if (!umkm) notFound();
 
-  const waLink = toWhatsAppLink(umkm.whatsapp);
-  const dusunLabel = formatDusun(umkm.dusun);
-
   return (
     <div className="mx-auto max-w-6xl px-4 py-20 sm:px-6">
       <Link href="/umkm" className="mb-8 inline-flex items-center gap-2 text-sm font-medium text-[var(--color-primary)] hover:underline">
@@ -38,7 +35,7 @@ export default async function UmkmDetailPage({ params }: { params: Promise<{ id:
       <div className="grid gap-10 md:grid-cols-2">
         <Reveal direction="left" className="relative aspect-square w-full overflow-hidden rounded-[var(--radius-card)] border-4 border-white bg-[var(--color-accent-light)] shadow-soft-lg">
           {umkm.photo_url ? (
-            <Image src={umkm.photo_url} alt={umkm.name} fill className="object-cover" priority />
+            <Image src={umkm.photo_url} alt={umkm.name ?? "UMKM"} fill className="object-cover" priority />
           ) : (
             <div className="flex h-full w-full items-center justify-center text-[var(--color-accent)]">
               <ImageOff className="h-10 w-10" />
@@ -47,12 +44,9 @@ export default async function UmkmDetailPage({ params }: { params: Promise<{ id:
         </Reveal>
 
         <Reveal direction="right" delay={0.1}>
-          <div className="mb-3 flex flex-wrap gap-2">
-            {umkm.umkm_categories?.name && <Badge>{umkm.umkm_categories.name}</Badge>}
-            {dusunLabel && <Badge className="bg-[var(--color-accent-light)] text-[var(--color-primary-dark)]">{dusunLabel}</Badge>}
-          </div>
+          {umkm.umkm_categories?.name && <Badge className="mb-3">{umkm.umkm_categories.name}</Badge>}
           <h1 className="mb-2 font-display text-3xl text-[var(--color-primary-dark)]">{umkm.name}</h1>
-          <p className="mb-6 text-sm text-[var(--color-muted)]">Pemilik: {umkm.owner}</p>
+          {umkm.owner && <p className="mb-6 text-sm text-[var(--color-muted)]">Pemilik: {umkm.owner}</p>}
 
           {umkm.address && (
             <p className="mb-4 flex items-start gap-2 text-sm">
@@ -66,12 +60,10 @@ export default async function UmkmDetailPage({ params }: { params: Promise<{ id:
             </p>
           )}
 
-          {waLink ? (
-            <Button href={waLink} variant="accent" size="lg">
+          {toWhatsAppLink(umkm.whatsapp) && (
+            <Button href={toWhatsAppLink(umkm.whatsapp)!} variant="accent" size="lg">
               <MessageCircle className="h-4 w-4" /> Hubungi via WhatsApp
             </Button>
-          ) : (
-            <p className="text-sm text-[var(--color-muted)]">Nomor HP belum tersedia.</p>
           )}
         </Reveal>
       </div>
@@ -85,7 +77,6 @@ export default async function UmkmDetailPage({ params }: { params: Promise<{ id:
           </Reveal>
           <StaggerGroup className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
             {products.map((product) => {
-              const stockStatus = getStockStatus(product.stock);
               return (
                 <StaggerItem key={product.id}>
                   <Card className="flex h-full flex-col overflow-hidden p-3">
@@ -96,7 +87,7 @@ export default async function UmkmDetailPage({ params }: { params: Promise<{ id:
                       {product.photo_url ? (
                         <Image
                           src={product.photo_url}
-                          alt={product.name ?? umkm.name}
+                          alt={product.name ?? umkm.name ?? "Produk"}
                           fill
                           className="object-cover transition-transform duration-500 ease-out hover:scale-110"
                         />
@@ -104,13 +95,6 @@ export default async function UmkmDetailPage({ params }: { params: Promise<{ id:
                         <div className="flex h-full w-full items-center justify-center text-[var(--color-accent)]">
                           <ImageOff className="h-8 w-8" />
                         </div>
-                      )}
-                      {stockStatus && (
-                        <span
-                          className={`absolute left-3 top-3 rounded-full px-2.5 py-1 text-xs font-medium shadow-soft ${stockStatus.className}`}
-                        >
-                          {stockStatus.label}
-                        </span>
                       )}
                     </Link>
 

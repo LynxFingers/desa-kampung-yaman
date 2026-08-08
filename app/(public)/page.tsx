@@ -35,7 +35,7 @@ export default async function BerandaPage() {
     <>
       {/* Hero */}
       <section className="px-2 pt-2 sm:px-4 sm:pt-4">
-        <div className="relative aspect-[4/5] w-full overflow-hidden rounded-[1.5rem] sm:aspect-auto sm:h-[650px] sm:rounded-[2rem]">
+        <div className="relative h-[560px] w-full overflow-hidden rounded-[1.5rem] sm:h-[650px] sm:rounded-[2rem]">
           <div className="absolute inset-0">
             {settings.hero_image_url ? (
               <Image src={settings.hero_image_url} alt={settings.village_name} fill priority className="object-cover" />

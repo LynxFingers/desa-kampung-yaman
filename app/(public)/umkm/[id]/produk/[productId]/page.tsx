@@ -8,7 +8,7 @@ import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Reveal } from "@/components/motion/reveal";
 import { getUmkmById, getUmkmProductById } from "@/lib/data/umkm";
-import { formatCurrency, getStockStatus, toWhatsAppLink } from "@/lib/utils";
+import { formatCurrency, toWhatsAppLink } from "@/lib/utils";
 
 export async function generateMetadata({
   params,
@@ -30,8 +30,7 @@ export default async function ProdukDetailPage({
 
   if (!umkm || !product || product.umkm_id !== umkm.id) notFound();
 
-  const stockStatus = getStockStatus(product.stock);
-  const waLink = toWhatsAppLink(umkm.whatsapp);
+  const whatsappLink = toWhatsAppLink(umkm.whatsapp);
 
   return (
     <div className="mx-auto max-w-5xl px-4 py-20 sm:px-6">
@@ -46,18 +45,11 @@ export default async function ProdukDetailPage({
         <Reveal direction="left">
           <Card className="relative aspect-square w-full overflow-hidden p-0">
             {product.photo_url ? (
-              <Image src={product.photo_url} alt={product.name ?? umkm.name} fill className="object-cover" priority />
+              <Image src={product.photo_url} alt={product.name ?? umkm.name ?? "Produk"} fill className="object-cover" priority />
             ) : (
               <div className="flex h-full w-full items-center justify-center text-[var(--color-accent)]">
                 <ImageOff className="h-10 w-10" />
               </div>
-            )}
-            {stockStatus && (
-              <span
-                className={`absolute left-4 top-4 rounded-full px-3 py-1 text-xs font-medium shadow-soft ${stockStatus.className}`}
-              >
-                {stockStatus.label}
-              </span>
             )}
           </Card>
         </Reveal>
@@ -100,8 +92,8 @@ export default async function ProdukDetailPage({
           )}
 
           <div className="flex flex-wrap gap-3">
-            {waLink && (
-              <Button href={waLink} variant="accent" size="lg">
+            {whatsappLink && (
+              <Button href={whatsappLink} variant="accent" size="lg">
                 <MessageCircle className="h-4 w-4" /> Tanya via WhatsApp
               </Button>
             )}

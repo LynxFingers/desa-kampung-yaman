@@ -53,32 +53,23 @@ export function getStockStatus(stock: number | null | undefined) {
   return { label: `Stok Tersedia: ${stock}`, className: "bg-green-50 text-[var(--color-success)]" };
 }
 
-/**
- * Normalizes a phone number to the wa.me format (62xxxxxxxxxx).
- * Returns null when the UMKM has no phone number on file (stored as "-"),
- * so callers can hide the WhatsApp button instead of linking to a broken
- * https://wa.me/ URL.
- */
-export function toWhatsAppLink(phone: string): string | null {
-  if (!phone || phone.trim() === "-") return null;
+/** Normalizes a phone number to the wa.me format (62xxxxxxxxxx). */
+export function toWhatsAppLink(phone: string | null | undefined) {
+  if (!phone) return null;
   const digits = phone.replace(/\D/g, "");
   if (!digits) return null;
   const normalized = digits.startsWith("0") ? "62" + digits.slice(1) : digits;
   return `https://wa.me/${normalized}`;
 }
 
-export const DUSUN_LABELS: Record<number, string> = {
-  1: "Dusun 1",
-  2: "Dusun 2",
-  3: "Dusun 3",
-  4: "Dusun 4",
-  5: "Dusun 5",
-};
-
-/** Human-readable label for a UMKM's dusun (hamlet) grouping. */
-export function formatDusun(dusun: number | null | undefined) {
-  if (!dusun) return null;
-  return DUSUN_LABELS[dusun] ?? `Dusun ${dusun}`;
+/**
+ * A UMKM only counts as "having a profile" (and gets a full card) once it
+ * has a name. Entries that only carry a category (no name/owner/etc. yet)
+ * still count toward statistics, but are rendered as a lightweight notice
+ * instead of an empty-looking card.
+ */
+export function hasUmkmProfile(umkm: { name?: string | null }) {
+  return Boolean(umkm.name && umkm.name.trim().length > 0);
 }
 
 /** Extracts the object path within a bucket from a Supabase public storage URL. */

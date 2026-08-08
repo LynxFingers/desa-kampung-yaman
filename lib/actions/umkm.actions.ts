@@ -11,7 +11,6 @@ function parseUmkmForm(formData: FormData) {
     name: formData.get("name"),
     owner: formData.get("owner"),
     category_id: formData.get("category_id"),
-    dusun: formData.get("dusun"),
     address: formData.get("address") ?? "",
     whatsapp: formData.get("whatsapp"),
     description: formData.get("description") ?? "",
@@ -26,6 +25,9 @@ export async function createUmkm(formData: FormData): Promise<ActionResult> {
   const supabase = await createClient();
   const { error } = await supabase.from("umkm").insert({
     ...parsed.data,
+    name: parsed.data.name || null,
+    owner: parsed.data.owner || null,
+    whatsapp: parsed.data.whatsapp || null,
     address: parsed.data.address || null,
     description: parsed.data.description || null,
     photo_url: parsed.data.photo_url || null,
@@ -33,7 +35,7 @@ export async function createUmkm(formData: FormData): Promise<ActionResult> {
 
   if (error) return { success: false, message: "Gagal menyimpan data UMKM." };
 
-  await logActivity("umkm", "create", `Menambahkan UMKM "${parsed.data.name}"`);
+  await logActivity("umkm", "create", `Menambahkan UMKM "${parsed.data.name || "(belum ada nama)"}"`);
   revalidatePath("/umkm");
   revalidatePath("/dashboard/umkm");
   revalidatePath("/");
@@ -49,6 +51,9 @@ export async function updateUmkm(id: string, formData: FormData): Promise<Action
     .from("umkm")
     .update({
       ...parsed.data,
+      name: parsed.data.name || null,
+      owner: parsed.data.owner || null,
+      whatsapp: parsed.data.whatsapp || null,
       address: parsed.data.address || null,
       description: parsed.data.description || null,
       photo_url: parsed.data.photo_url || null,
@@ -57,19 +62,19 @@ export async function updateUmkm(id: string, formData: FormData): Promise<Action
 
   if (error) return { success: false, message: "Gagal memperbarui data UMKM." };
 
-  await logActivity("umkm", "update", `Memperbarui UMKM "${parsed.data.name}"`);
+  await logActivity("umkm", "update", `Memperbarui UMKM "${parsed.data.name || "(belum ada nama)"}"`);
   revalidatePath("/umkm");
   revalidatePath("/dashboard/umkm");
   revalidatePath("/");
   return { success: true, message: "UMKM berhasil diperbarui." };
 }
 
-export async function deleteUmkm(id: string, name: string): Promise<ActionResult> {
+export async function deleteUmkm(id: string, name: string | null): Promise<ActionResult> {
   const supabase = await createClient();
   const { error } = await supabase.from("umkm").delete().eq("id", id);
   if (error) return { success: false, message: "Gagal menghapus data UMKM." };
 
-  await logActivity("umkm", "delete", `Menghapus UMKM "${name}"`);
+  await logActivity("umkm", "delete", `Menghapus UMKM "${name || "(belum ada nama)"}"`);
   revalidatePath("/umkm");
   revalidatePath("/dashboard/umkm");
   revalidatePath("/");

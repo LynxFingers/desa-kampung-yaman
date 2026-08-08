@@ -81,13 +81,12 @@ export interface Umkm {
   id: string;
   category_id: string | null;
   admin_id: string | null;
-  name: string;
-  owner: string;
+  name: string | null;
+  owner: string | null;
   address: string | null;
-  whatsapp: string;
+  whatsapp: string | null;
   description: string | null;
   photo_url: string | null;
-  dusun: number | null;
   created_at: string;
   umkm_categories?: UmkmCategory | null;
 }
